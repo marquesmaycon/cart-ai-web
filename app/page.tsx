@@ -1,103 +1,252 @@
-import Image from "next/image"
+"use client"
 
-export default function Home() {
+import { History, Loader2, Plus, Send, Upload } from "lucide-react"
+import { useSearchParams } from "next/navigation"
+import { useEffect, useRef, useState } from "react"
+import { toast } from "sonner"
+import useSWR, { mutate } from "swr"
+import { chooseCart } from "@/api/cart"
+import {
+  confirmAction,
+  createChatSession,
+  getChatSession,
+  sendMessageToChat
+} from "@/api/chat-session"
+import { ChatMessageBalloon } from "@/components/chat-message"
+import { ChatSidebar } from "@/components/chat-sidebar"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+
+export default function ChatPage() {
+  const params = useSearchParams()
+  const chatId = params.get("chatId")
+  const chat = useSWR(`/api/chats/${chatId}`, () =>
+    getChatSession(chatId ? Number(chatId) : 0)
+  )
+  const [message, setMessage] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }, [])
+
+  const handleSendMessage = async () => {
+    if (!message.trim() || loading) return
+
+    const getChatId = async () => {
+      if (chatId) return Number(chatId)
+      const response = await createChatSession()
+      if (!response) {
+        console.error("Erro ao criar chat")
+        return null
+      }
+      return response.id
+    }
+
+    const thisChatId = await getChatId()
+    if (!thisChatId) {
+      console.error("Erro ao criar ou obter chat. Tente novamente mais tarde.")
+      return
+    }
+
+    setMessage("")
+    setLoading(true)
+    await sendMessageToChat(thisChatId, message)
+    await chat.mutate()
+    setLoading(false)
+  }
+
+  const handleApplyCart = async (cartId: number) => {
+    setLoading(true)
+    try {
+      await chooseCart(cartId)
+      await mutate("/api/cart")
+      toast.success("Carrinho aplicado com sucesso!")
+    } catch (error) {
+      console.error("Erro ao aplicar carrinho:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const createNewConversation = async () => {
+    const response = await createChatSession()
+    if (response) {
+      window.history.pushState({}, "", `?chatId=${response.id}`)
+    } else {
+      console.error("Erro ao criar nova conversa")
+    }
+  }
+
+  const handleConfirmAction = async (actionId: number, sessionId?: number) => {
+    if (!sessionId) return
+    setLoading(true)
+    try {
+      await confirmAction(sessionId, actionId)
+      await chat.mutate()
+    } catch (error) {
+      console.error("Erro ao confirmar ação:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const suggestedPrompts = [
+    "Sugira uma receita fácil para o jantar",
+    "Quero comparar preços de ingredientes",
+    "Busque produtos de massa",
+    "Como fazer um risotto?"
+  ]
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="flex h-screen bg-gray-50">
+      {/* Conversation Sidebar */}
+      <ChatSidebar
+        isOpen={sidebarOpen}
+        onToggle={() => setSidebarOpen(!sidebarOpen)}
+      />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      {/* Main Chat Area */}
+      <div
+        className={`
+          flex flex-col h-screen w-full pt-16 lg:pt-0 transition-all duration-300 ease-in-out
+          ${sidebarOpen ? "lg:mr-80" : "mr-0"}
+        `}
+      >
+        {/* Header */}
+        <div className="bg-white border-b border-gray-200 p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Assistente</h1>
+            </div>
+
+            <div className="flex items-center space-x-3">
+              {!chat.data && !chat.isLoading && (
+                <Button
+                  onClick={() => createNewConversation()}
+                  className="hidden lg:block"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                </Button>
+              )}
+
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                className="relative"
+              >
+                <History className="h-4 w-4" />
+                {/* Badge for conversation count */}
+                {/* {conversations.length > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {conversations.length}
+                  </span>
+                )} */}
+              </Button>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        {/* Messages Area */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {!chat.data && !chat.isLoading ? (
+            <div className="text-center py-8">
+              <div className="text-6xl mb-4">🤖</div>
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                Olá! Sou seu assistente culinário
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Inicie uma nova conversa para começar!
+              </p>
+
+              <Button onClick={createNewConversation} size="lg">
+                Iniciar Nova Conversa
+              </Button>
+            </div>
+          ) : chat.data && chat.data.messages?.length === 0 ? (
+            <div className="text-center py-8">
+              <div className="text-6xl mb-4">🤖</div>
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                Como posso te ajudar hoje?
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Posso te ajudar com receitas, buscar produtos e comparar preços!
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-md mx-auto">
+                {suggestedPrompts.map((prompt, index) => (
+                  <Button
+                    key={String(index)}
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setMessage(prompt)}
+                    className="text-left justify-start"
+                  >
+                    {prompt}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          ) : (
+            chat.data?.messages?.map((msg) => (
+              <ChatMessageBalloon
+                key={msg.id}
+                message={msg}
+                onConfirmAction={(actionId) =>
+                  handleConfirmAction(actionId, chat.data?.id)
+                }
+                onApplyCart={handleApplyCart}
+              />
+            ))
+          )}
+
+          {loading && (
+            <div className="flex justify-start">
+              <div className="bg-gray-100 text-gray-900 px-4 py-2 rounded-lg flex items-center space-x-2">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span className="text-sm">Assistente está pensando...</span>
+              </div>
+            </div>
+          )}
+
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Input Area */}
+        <div className="bg-white border-t border-gray-200 p-4">
+          <div className="flex space-x-2">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={loading}
+              title="Upload PDF"
+            >
+              <Upload className="h-4 w-4" />
+            </Button>
+
+            <Input
+              placeholder="Digite sua mensagem..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+              disabled={loading}
+              className="flex-1"
+            />
+
+            <Button
+              onClick={handleSendMessage}
+              disabled={loading || !message.trim()}
+            >
+              <Send className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

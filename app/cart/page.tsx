@@ -58,7 +58,7 @@ export default function CartPage() {
       <CardContent>
         <ul className="space-y-4">
           {cart?.items?.map(
-            ({ product: { name, id: productId, price }, quantity }) => (
+            ({ productId, product: { name, price }, quantity }) => (
               <li key={productId} className="py-2 px-4 bg-slate-100 rounded-lg">
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg font-semibold">{name}</h3>
