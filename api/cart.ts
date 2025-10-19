@@ -36,3 +36,7 @@ export const updateCart = async ({
     })
     .json()
 }
+
+export const chooseCart = async (cartId: number) => {
+  return await api.patch(`cart/${cartId}/choose`).json()
+}
