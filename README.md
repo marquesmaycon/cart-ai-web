@@ -1,74 +1,57 @@
 # Cart AI Web
 
-Interface web para um carrinho inteligente com IA, focada em experiencia de compra, recomendacoes e interacao fluida.
+Interface web para uma aplicação de carrinho inteligente com IA, focada em experiência de compra e interação moderna.
 
-![Next.js 15](https://img.shields.io/badge/Nextjs_15-20232A?style=flat-square)
-![React 19](https://img.shields.io/badge/React_19-20232A?style=flat-square)
-![TypeScript](https://img.shields.io/badge/TypeScript-20232A?style=flat-square)
-![SWR](https://img.shields.io/badge/SWR-20232A?style=flat-square)
-![Ky](https://img.shields.io/badge/Ky-20232A?style=flat-square)
-![Radix UI](https://img.shields.io/badge/Radix_UI-20232A?style=flat-square)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-20232A?style=flat-square)
-![Biome](https://img.shields.io/badge/Biome-20232A?style=flat-square)
-
-## Demo
-
-Este projeto nao possui demo publica ativa no momento.
+![Next.js](https://img.shields.io/badge/Next.js-000000?style=plastic&logo=nextdotjs)
+![React](https://img.shields.io/badge/React-20232A?style=plastic&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=plastic&logo=typescript&logoColor=fff)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-06B6D4?style=plastic&logo=tailwindcss&logoColor=fff)
+![Radix UI](https://img.shields.io/badge/Radix_UI-161618?style=plastic&logo=radixui&logoColor=fff)
+![Biome](https://img.shields.io/badge/Biome-60A5FA?style=plastic&logo=biome&logoColor=fff)
 
 ## Sobre
 
-Interface web para um carrinho inteligente com IA, focada em experiencia de compra, recomendacoes e interacao fluida.
-
-O objetivo deste repositorio e demonstrar uma implementacao clara, organizada e facil de avaliar, com documentacao objetiva para recrutadores e pessoas tecnicas entenderem rapidamente o contexto do projeto.
+Interface web para uma aplicação de carrinho inteligente com IA, focada em experiência de compra e interação moderna.
 
 ## Funcionalidades
 
-- Interface de carrinho inteligente.
-- Consumo de API.
-- Estado remoto com SWR.
-- Componentes acessiveis.
-- Tema claro/escuro.
-- Feedbacks com Sonner.
+- Interface web para carrinho inteligente com IA.
+- Experiencia de compra moderna e interativa.
+- Fluxos de usuario voltados a sugestoes e organizacao do carrinho.
+- Layout responsivo para uso em diferentes dispositivos.
 
 ## Stack
 
-- **Next.js 15**
-- **React 19**
-- **TypeScript**
-- **SWR**
-- **Ky**
-- **Radix UI**
-- **Tailwind CSS**
-- **Biome**
+- Next.js
+- React
+- TypeScript
+- TailwindCSS
+- Radix UI
+- Biome
 
 ## Como executar
 
 ```bash
-git clone https://github.com/marquesmaycon/cart-ai-web.git
-cd cart-ai-web
 npm install
 npm run dev
 ```
 
 ## Scripts disponiveis
 
-- `npm run dev`
-- `npm run build`
-- `npm run start`
-- `npm run lint`
-- `npm run format`
+```bash
+npm run dev
+npm run build
+npm run start
+npm run lint
+```
 
 ## Destaques tecnicos
 
-- Projeto alinhado a produtos com IA.
-- Stack moderna e enxuta.
-- Boa separacao entre interface e API.
+- Frontend React com foco em experiencia de compra assistida por IA.
+- Estrutura preparada para comunicacao com API backend.
+- Componentizacao voltada a reutilizacao de interface.
 
-## Repositorio
-
-[Acessar repositorio no GitHub](https://github.com/marquesmaycon/cart-ai-web)
-
----
+## Autor
 
 <div align="center">
   <img src="https://github.com/marquesmaycon.png" width="100px" style="border-radius: 50%"/>
@@ -77,7 +60,8 @@ npm run dev
   <br/>
   <br/>
 
-  [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/mayconhenrique/)
+  [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMjU2JyBoZWlnaHQ9JzI1NicgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSd4TWlkWU1pZCcgdmlld0JveD0nMCAwIDI1NiAyNTYnPjxwYXRoIGQ9J00yMTguMTIzIDIxOC4xMjdoLTM3LjkzMXYtNTkuNDAzYzAtMTQuMTY1LS4yNTMtMzIuNC0xOS43MjgtMzIuNC0xOS43NTYgMC0yMi43NzkgMTUuNDM0LTIyLjc3OSAzMS4zNjl2NjAuNDNoLTM3LjkzVjk1Ljk2N2gzNi40MTN2MTYuNjk0aC41MWEzOS45MDcgMzkuOTA3IDAgMCAxIDM1LjkyOC0xOS43MzNjMzguNDQ1IDAgNDUuNTMzIDI1LjI4OCA0NS41MzMgNTguMTg2bC0uMDE2IDY3LjAxM1pNNTYuOTU1IDc5LjI3Yy0xMi4xNTcuMDAyLTIyLjAxNC05Ljg1Mi0yMi4wMTYtMjIuMDA5LS4wMDItMTIuMTU3IDkuODUxLTIyLjAxNCAyMi4wMDgtMjIuMDE2IDEyLjE1Ny0uMDAzIDIyLjAxNCA5Ljg1MSAyMi4wMTYgMjIuMDA4QTIyLjAxMyAyMi4wMTMgMCAwIDEgNTYuOTU1IDc5LjI3bTE4Ljk2NiAxMzguODU4SDM3Ljk1Vjk1Ljk2N2gzNy45N3YxMjIuMTZaTTIzNy4wMzMuMDE4SDE4Ljg5QzguNTgtLjA5OC4xMjUgOC4xNjEtLjAwMSAxOC40NzF2MjE5LjA1M2MuMTIyIDEwLjMxNSA4LjU3NiAxOC41ODIgMTguODkgMTguNDc0aDIxOC4xNDRjMTAuMzM2LjEyOCAxOC44MjMtOC4xMzkgMTguOTY2LTE4LjQ3NFYxOC40NTRjLS4xNDctMTAuMzMtOC42MzUtMTguNTg4LTE4Ljk2Ni0xOC40NTMnIGZpbGw9JyNmZmYnLz48L3N2Zz4K)](https://www.linkedin.com/in/mayconhenrique/)
   [![GitHub](https://img.shields.io/badge/GitHub-100000?style=flat-square&logo=github&logoColor=white)](https://github.com/marquesmaycon)
   [![Email](https://img.shields.io/badge/Email-D14836?style=flat-square&logo=gmail&logoColor=white)](mailto:mayconmarquesh@gmail.com)
+  [![WhatsApp](https://img.shields.io/badge/WhatsApp-25D366?style=flat-square&logo=whatsapp&logoColor=white)](https://wa.me/5544991173753)
 </div>
